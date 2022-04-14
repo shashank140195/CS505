@@ -45,7 +45,7 @@ public class Launcher {
 
 
         String queryString = " " +
-                "from PatientInStream#window.timeBatch(5 sec) " +
+                "from PatientInStream#window.timeBatch(15 sec) " +
                 "select zip_code, count() as count " +
                 "group by zip_code " +
                 "insert into PatientOutStream; ";
@@ -67,11 +67,12 @@ public class Launcher {
         message_config.put("virtualhost","1");
         message_config.put("topicname", "patient_list");
 
+
         topicConnector = new TopicConnector(message_config);
         topicConnector.connect();
 
         //Embedded HTTP initialization
-        startServer();
+//        startServer();
 
         try {
             while (true) {
