@@ -33,47 +33,11 @@ public class DerbyDBEngine {
     public DerbyDBEngine(){
         try {
 
-            
+            Properties info = new Properties();
+            info.put("user", "admin");
+            info.put("password", "admin");
 
-            // OPEN THE DATABASE
-            // OrientDB orientDB = new OrientDB("remote:localhost", null);
-            // ODatabaseDocument db = orientDB.open("teamdb", "root", "rootpwd");
-            
 
-            // System.out.print("Connected!");
-
-            // // CREATE A NEW DOCUMENT AND FILL IT
-            // ODocument doc = new ODocument("Person");
-            // doc.field( "name", "Luke" );
-            // doc.field( "surname", "Skywalker" );
-            // doc.field( "city", new ODocument("City")
-            // .field("name","Rome")
-            // .field("country", "Italy") );
-
-            // // SAVE THE DOCUMENT
-            // db.save(doc);
-
-            // db.close();
-            // orientDB.close();
-
-            // System.out.println("Written random data!");
-
-            // OPEN THE DATABASE
-ODatabaseDocumentTx db = new ODatabaseDocumentTx(
-    "localhost:2424/teamdb").open("root", "rootpwd");
- 
- // CREATE A NEW DOCUMENT AND FILL IT
- ODocument doc = new ODocument("Person");
- doc.field( "name", "Luke" );
- doc.field( "surname", "Skywalker" );
- doc.field( "city", new ODocument("City")
-    .field("name","Rome")
-    .field("country", "Italy") );
- 
- // SAVE THE DOCUMENT
- doc.save();
- 
- db.close();
         }
 
         catch (Exception ex) {

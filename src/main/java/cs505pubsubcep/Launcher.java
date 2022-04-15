@@ -69,7 +69,7 @@ public class Launcher {
         message_config.put("hostname","128.163.202.50"); //Fill config for your team in
         message_config.put("username","student");
         message_config.put("password","student01");
-        message_config.put("virtualhost","1");
+        message_config.put("virtualhost","7");
         message_config.put("topicname", "patient_list");
 
 
