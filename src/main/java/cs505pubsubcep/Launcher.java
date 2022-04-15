@@ -3,6 +3,7 @@ package cs505pubsubcep;
 import cs505pubsubcep.CEP.CEPEngine;
 import cs505pubsubcep.Topics.TopicConnector;
 import cs505pubsubcep.database.DerbyDBEngine;
+import cs505pubsubcep.database.MongoEngine;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -34,6 +35,7 @@ public class Launcher {
     public static void main(String[] args) throws IOException {
 
         // DerbyDBEngine derbyDBEngine = new DerbyDBEngine();
+        new MongoEngine();
 
         
         System.out.println("Starting CEP...");
