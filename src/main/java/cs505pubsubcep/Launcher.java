@@ -21,6 +21,8 @@ public class Launcher {
     public static final int WEB_PORT = 8082;
     public static String inputStreamName = null;
     public static long accessCount = -1;
+    public static Map<Integer,Integer> zipAlertCount;
+    public static boolean checkAlert=false;
 
     public static TopicConnector topicConnector;
 

@@ -3,7 +3,9 @@ package cs505pubsubcep.CEP;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import cs505pubsubcep.Launcher;
 import io.siddhi.core.util.transport.InMemoryBroker;
+import io.siddhi.query.api.expression.condition.In;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -102,12 +104,12 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
                 first = matcher.group(1);
 //                second = matcher.group(2);
             }
-            System.out.printf("First: %s\nSecond: %s\n", first, second);
+//            System.out.printf("First: %s\nSecond: %s\n", first, second);
 
             first = first.replaceAll("\\{\"event\":","").replaceAll("\\}\\}","\\}").
                     replaceAll("\\},\\{","\\};\\{");
 
-            System.out.printf("First: %s\nSecond: %s\n", first, second);
+//            System.out.printf("First: %s\nSecond: %s\n", first, second);
 
             String[] alerts = first.split(";");
             Map<Integer,Integer> zipMap = new HashMap<Integer,Integer>();
@@ -127,6 +129,30 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
                 }
             }
             System.out.println(zipMap.toString());
+            if(Launcher.zipAlertCount!=null){
+                System.out.println("Zip alert list is not null");
+                Set<Integer> common = new HashSet<Integer>();
+                for(Integer key : zipMap.keySet()){
+                    if(Launcher.zipAlertCount.containsKey(key)){
+                        if(zipMap.get(key)>=2*Launcher.zipAlertCount.get(key)) {
+                            common.add(key);
+                        }
+                    }
+                }
+//                Set<Integer> result = zipMap.keySet().stream()
+//                        .filter(keyB -> Launcher.zipAlertCount.keySet().stream()
+//                                .filter(keyA -> Launcher.zipAlertCount.get(keyA).equals(zipMap.get(keyB)))
+//                                .count() > 0).collect(Collectors.toSet());
+                System.out.println("ZipAlertPrev: "+Launcher.zipAlertCount);
+                System.out.println("Present: "+zipMap);
+                System.out.println("Alert: "+common);
+                if(common.size()>0){
+                    System.out.println("<<<<<<<<<<=============== ALERT ===============>>>>>>>>>>>>>>");
+                }
+            }else{
+                System.out.println("Zip alert list is NULL");
+            }
+            Launcher.zipAlertCount = zipMap;
 
 
             //Launcher.accessCount = Long.parseLong(outval[0]);
@@ -136,6 +162,7 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
         }
 
     }
+
 
     @Override
     public String getTopic() {
