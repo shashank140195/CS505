@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Path("/api")
 public class API {
@@ -87,8 +88,8 @@ public class API {
         try {
 
             //generate a response
-            Map<String,String> responseMap = new HashMap<>();
-            responseMap.put("ziplist",String.valueOf(Launcher.common));
+            Map<String,Set<Integer>> responseMap = new HashMap<>();
+            responseMap.put("ziplist",Launcher.common);
             responseString = gson.toJson(responseMap);
 
 
