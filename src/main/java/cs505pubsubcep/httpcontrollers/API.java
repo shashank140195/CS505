@@ -88,7 +88,7 @@ public class API {
 
             //generate a response
             Map<String,String> responseMap = new HashMap<>();
-            responseMap.put("accesscount",String.valueOf(Launcher.accessCount));
+            responseMap.put("ziplist",String.valueOf(Launcher.common));
             responseString = gson.toJson(responseMap);
 
 

@@ -12,7 +12,9 @@ import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class Launcher {
@@ -23,6 +25,7 @@ public class Launcher {
     public static long accessCount = -1;
     public static Map<Integer,Integer> zipAlertCount;
     public static boolean checkAlert=false;
+    public static Set<Integer> common = new HashSet<Integer>();
 
     public static TopicConnector topicConnector;
 
@@ -74,7 +77,7 @@ public class Launcher {
         topicConnector.connect();
 
         //Embedded HTTP initialization
-//        startServer();
+        startServer();
 
         try {
             while (true) {

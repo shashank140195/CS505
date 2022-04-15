@@ -81,6 +81,7 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
 
     private String topic;
 
+
     public OutputSubscriber(String topic, String streamName) {
         this.topic = topic;
     }
@@ -131,11 +132,10 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
             System.out.println(zipMap.toString());
             if(Launcher.zipAlertCount!=null){
                 System.out.println("Zip alert list is not null");
-                Set<Integer> common = new HashSet<Integer>();
                 for(Integer key : zipMap.keySet()){
                     if(Launcher.zipAlertCount.containsKey(key)){
                         if(zipMap.get(key)>=2*Launcher.zipAlertCount.get(key)) {
-                            common.add(key);
+                            Launcher.common.add(key);
                         }
                     }
                 }
@@ -145,8 +145,8 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
 //                                .count() > 0).collect(Collectors.toSet());
                 System.out.println("ZipAlertPrev: "+Launcher.zipAlertCount);
                 System.out.println("Present: "+zipMap);
-                System.out.println("Alert: "+common);
-                if(common.size()>0){
+                System.out.println("Alert: "+Launcher.common);
+                if(Launcher.common.size()>0){
                     System.out.println("<<<<<<<<<<=============== ALERT ===============>>>>>>>>>>>>>>");
                 }
             }else{
