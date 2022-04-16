@@ -2,7 +2,7 @@ package cs505pubsubcep.Models;
 
 import java.util.*;
 
-class Team {
+public class Team {
     private String name;
     private ArrayList<Integer> sid;
     private int status;

@@ -95,15 +95,22 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
 
 //            Pattern pattern = Pattern.compile("\\{\"event\":\\{\"zip_code\":(.*?),\"count\":(.*?)\\}\\}");
 
-            Pattern pattern = Pattern.compile("\\[(.*?)\\]");
-            Matcher matcher = pattern.matcher(m);
-
             String first = null;
             String second = null;
 
-            if (matcher.find()) {
-                first = matcher.group(1);
+            if(m.contains("[")) {
+                System.out.println("String contains [");
+                Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+                Matcher matcher = pattern.matcher(m);
+
+
+                if (matcher.find()) {
+                    first = matcher.group(1);
 //                second = matcher.group(2);
+                }
+            }else{
+                System.out.println("String donot contains [");
+                first = m;
             }
 //            System.out.printf("First: %s\nSecond: %s\n", first, second);
 

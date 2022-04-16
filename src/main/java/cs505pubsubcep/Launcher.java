@@ -39,17 +39,18 @@ public class Launcher {
         // DerbyDBEngine derbyDBEngine = new DerbyDBEngine();
         new MongoEngine();
 
-        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
-
-        String user = "neo4j";
-        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
-
-        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
-            app.createFriendship("Alice", "David");
-            app.findPerson("Alice");
-        }catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
+//
+//        String user = "neo4j";
+//        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
+//
+//        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
+//            app.clear();
+////            app.createFriendship("Alice", "David");
+////            app.findPerson("Alice");
+//        }catch(Exception ex){
+//            ex.printStackTrace();
+//        }
 
         
         System.out.println("Starting CEP...");
@@ -93,7 +94,7 @@ public class Launcher {
         topicConnector.connect();
 
         //Embedded HTTP initialization
-//        startServer();
+        startServer();
 
         try {
             while (true) {

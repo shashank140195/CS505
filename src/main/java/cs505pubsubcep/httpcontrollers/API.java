@@ -2,6 +2,7 @@ package cs505pubsubcep.httpcontrollers;
 
 import com.google.gson.Gson;
 
+import com.google.gson.reflect.TypeToken;
 import cs505pubsubcep.CEP.OutputSubscriber;
 import cs505pubsubcep.CEP.accessRecord;
 import cs505pubsubcep.Launcher;
@@ -15,9 +16,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import com.mongodb.*;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.*;
+import cs505pubsubcep.Models.Team;
+import cs505pubsubcep.Models.Vaccination;
+import cs505pubsubcep.database.MongoEngine;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 @Path("/api")
 public class API {
@@ -79,6 +96,52 @@ public class API {
         }
         return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
     }
+
+    @GET
+    @Path("/getteam")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTeam(@HeaderParam("X-Auth-API-Key") String authKey) {
+        String responseString = "{}";
+        try {
+
+
+            final Type teamType = new TypeToken<List<Team>>(){}.getType();
+
+            MongoDatabase database = MongoEngine.client.getDatabase("CS505Doc");
+            MongoCollection<Document> teamdb = database.getCollection("teamdb");
+            FindIterable<Document> team = teamdb.find();
+            System.out.println("teamdb: "+team.first());
+//            Team team1 = gson.fromJson(team.first().toString(), teamType);
+            Map<String,Object> res = new HashMap<String, Object>();
+
+            res.put("team_name", team.first().get("team_name"));
+            String sids=(String) team.first().get("team_member_sids");
+            ArrayList<Integer> sidAList = new ArrayList<Integer>();
+            String[] sidList = sids.split(",");
+            for(String str : sidList){
+                sidAList.add(Integer.parseInt(str));
+            }
+            res.put("team_member_sids", sidAList);
+            res.put("app_status_code", Integer.parseInt((String) team.first().get("app_status_code")));
+            responseString = gson.toJson(res);
+//            //generate a response
+//            Map<String,Set<Integer>> responseMap = new HashMap<>();
+//            responseMap.put("ziplist",Launcher.common);
+//            responseString = gson.toJson(responseMap);
+
+
+        } catch (Exception ex) {
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            ex.printStackTrace();
+
+            return Response.status(500).entity(exceptionAsString).build();
+        }
+        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
+    }
+
 
     @GET
     @Path("/zipalertlist")

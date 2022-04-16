@@ -21,16 +21,17 @@ import org.bson.types.ObjectId;
  import static com.mongodb.client.model.Updates.*;
 
 public class MongoEngine {
+    public static MongoClient client;
     public MongoEngine() {
 
 
 
-        MongoClient client = MongoClients.create("mongodb+srv://diginova:diginova@cluster0.dqmo2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+        client = MongoClients.create("mongodb+srv://diginova:diginova@cluster0.dqmo2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 
-        MongoDatabase database = client.getDatabase("CS505Doc");
-        MongoCollection<Document> teamdb = database.getCollection("teamdb");
-        FindIterable<Document> team = teamdb.find();
-        System.out.println("teamdb: "+team.first());
+//        MongoDatabase database = client.getDatabase("CS505Doc");
+//        MongoCollection<Document> teamdb = database.getCollection("teamdb");
+//        FindIterable<Document> team = teamdb.find();
+//        System.out.println("teamdb: "+team.first());
 
 
     }

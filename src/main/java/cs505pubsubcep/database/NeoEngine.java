@@ -28,17 +28,37 @@ public class NeoEngine implements AutoCloseable {
         driver.close();
     }
 
+    public void clear(){
+        String query="MATCH (n) DETACH DELETE n";
+        try (Session session = driver.session()) {
+            // Write transactions allow the driver to handle retries and transient errors
+            Record record = session.writeTransaction(tx -> {
+                Result result = tx.run(query, new HashMap<String, Object>());
+                return result.single();
+            });
+            System.out.println(String.format("Deleted all nodes"));
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, query + " raised an exception", ex);
+            throw ex;
+        }
+    }
+
+
+
     public void createFriendship(final String person1Name, final String person2Name) {
         // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
         // The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
-        String createFriendshipQuery = "CREATE (p1:Person { name: $person1_name })\n" +
-                "CREATE (p2:Person { name: $person2_name })\n" +
+        String createFriendshipQuery = "CREATE (p1:Person { name: $person1_name, mrn: $mrn1 })\n" +
+                "CREATE (p2:Person { name: $person2_name, mrn: $mrn2 })\n" +
                 "CREATE (p1)-[:KNOWS]->(p2)\n" +
                 "RETURN p1, p2";
 
         Map<String, Object> params = new HashMap<>();
         params.put("person1_name", person1Name);
         params.put("person2_name", person2Name);
+        params.put("mrn1", 12345);
+        params.put("mrn2", 56748);
 
         try (Session session = driver.session()) {
             // Write transactions allow the driver to handle retries and transient errors
