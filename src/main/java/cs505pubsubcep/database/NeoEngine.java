@@ -12,10 +12,12 @@ import java.util.logging.Logger;
 import static org.neo4j.driver.Config.TrustStrategy.trustAllCertificates;
 
 public class NeoEngine implements AutoCloseable {
-    private static final Logger LOGGER = Logger.getLogger(DriverIntroductionExample.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(NeoEngine.class.getName());
     private final Driver driver;
 
-    public DriverIntroductionExample(String uri, String user, String password, Config config) {
+    
+
+    public NeoEngine(String uri, String user, String password, Config config) {
         // The driver is a long living object and should be opened during the start of your application
         driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password), config);
     }
@@ -76,12 +78,12 @@ public class NeoEngine implements AutoCloseable {
 
     public static void main(String... args) throws Exception {
         // Aura queries use an encrypted connection using the "neo4j+s" protocol
-        String uri = "neo4j+s://<Bolt url for Neo4j Aura database>";
+        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
 
-        String user = "<Username for Neo4j Aura database>";
-        String password = "<Password for Neo4j Aura database>";
+        String user = "neo4j";
+        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
 
-        try (DriverIntroductionExample app = new DriverIntroductionExample(uri, user, password, Config.defaultConfig())) {
+        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
             app.createFriendship("Alice", "David");
             app.findPerson("Alice");
         }
