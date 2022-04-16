@@ -24,14 +24,6 @@ public class MongoEngine {
     public MongoEngine() {
 
 
-        // ConnectionString connectionString = new ConnectionString("mongodb+srv://diginova:diginova@cluster0.dqmo2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
-        // MongoClientSettings settings = MongoClientSettings.builder()
-        //         .applyConnectionString(connectionString)
-        //         .build();
-        // MongoClient mongoClient = MongoClients.create(settings);
-        // MongoDatabase database = mongoClient.getDatabase("CS505Doc");
-        // System.out.println("Database: "+database.getCollection("teamdb"));
-
 
         MongoClient client = MongoClients.create("mongodb+srv://diginova:diginova@cluster0.dqmo2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 

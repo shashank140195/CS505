@@ -8,6 +8,22 @@
     <artifactId>cs505-pubsub-cep-template</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>wso2-maven2-repository</id>-->
+<!--            <name>WSO2 Maven2 Repository</name>-->
+<!--            <url>http://dist.wso2.org/maven2</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>never</updatePolicy>-->
+<!--                <checksumPolicy>fail</checksumPolicy>-->
+<!--            </releases>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+
 
     <properties>
         <jarName>pubsub-cep-web</jarName>
@@ -154,6 +170,12 @@
             <version>3.12.10</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>4.1.0</version>
+        </dependency>
 
 
     </dependencies>
