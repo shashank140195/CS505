@@ -28,6 +28,8 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.*;
 import cs505pubsubcep.Models.Team;
 import cs505pubsubcep.Models.Vaccination;
+import cs505pubsubcep.Utils.ContactMongo;
+import cs505pubsubcep.Utils.EventMongo;
 import cs505pubsubcep.database.MongoEngine;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -81,6 +83,54 @@ public class API {
 
             responseString = gson.toJson(responseMap);
 
+
+        } catch (Exception ex) {
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            ex.printStackTrace();
+
+            return Response.status(500).entity(exceptionAsString).build();
+        }
+        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
+    }
+
+
+    public boolean reset(){
+        try {
+            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "patient");
+            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "event");
+            Document doc = new Document();
+            doc.append("type", "event");
+            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "event");
+            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "contact");
+            doc = new Document();
+            doc.append("type", "contact");
+            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "contact");
+            Launcher.eventMongo = new EventMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
+            Launcher.contactMongo = new ContactMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
+            return true;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @GET
+    @Path("/reset")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getResetStatus(@HeaderParam("X-Auth-API-Key") String authKey) {
+        String responseString = "{}";
+        try {
+            Map<String,Object> res = new HashMap<String, Object>();
+            if(reset()){
+                res.put("reset_status_code", 1);
+            }else{
+                res.put("reset_status_code", 0);
+            }
+
+            responseString = gson.toJson(res);
 
         } catch (Exception ex) {
 

@@ -68,10 +68,17 @@ public class ContactMongo implements DBImpl{
     public boolean update() {
         for(String key : this.contactMap.keySet()) {
             Bson filter = Filters.eq("type","contact");
-            Bson update = Updates.push(key, this.contactMap.get(key));
+            System.out.println("this.contactMap: "+this.contactMap);
+            Set<String> set1 = this.contactMap.get(key);
 
-            UpdateOptions options = new UpdateOptions().upsert(true);
-            System.out.println(collection.updateOne(filter, update, options));
+            for(String str : set1) {
+
+                Bson update = Updates.push(key, str);
+
+
+                UpdateOptions options = new UpdateOptions().upsert(true);
+                System.out.println(collection.updateOne(filter, update, options));
+            }
 
 //            FindOneAndUpdateOptions options = new FindOneAndUpdateOptions()
 //                    .returnDocument(ReturnDocument.AFTER);
@@ -89,12 +96,12 @@ public class ContactMongo implements DBImpl{
     public ArrayList<String> getContactList(String mrn){
         FindIterable<Document> mongoIter = this.collection.find();
         try {
-            ArrayList<ArrayList<String>> mrnList = (ArrayList<ArrayList<String>>) mongoIter.first().get(mrn);
+            ArrayList<String> mrnList = (ArrayList<String>) mongoIter.first().get(mrn);
             System.out.println(mrnList);
             if(mrnList!=null){
-                System.out.println(mrnList.get(0));
-                System.out.println((mrnList!=null)?mrnList.get(0).size():null);
-                return mrnList.get(0);
+                System.out.println(mrnList);
+                System.out.println((mrnList!=null)?mrnList.size():null);
+                return mrnList;
             }
             return new ArrayList<String>();
         }catch (NullPointerException nex){

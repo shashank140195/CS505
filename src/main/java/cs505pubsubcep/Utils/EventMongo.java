@@ -68,6 +68,8 @@ public class EventMongo implements DBImpl {
             Bson filter = Filters.eq("type","event");
             Bson update = Updates.push(key, this.eventMap.get(key));
 
+
+
             UpdateOptions options = new UpdateOptions().upsert(true);
             System.out.println(collection.updateOne(filter, update, options));
 

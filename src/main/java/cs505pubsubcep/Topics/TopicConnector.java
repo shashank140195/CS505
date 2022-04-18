@@ -133,6 +133,11 @@ public class TopicConnector {
                     }
                     if(tmp.size()>0){
                         contactMap.put(patientData.getPatient_mrn(), tmp);
+                        for(String mrns : tmp){
+                            Set<String> set1 = new TreeSet<String>();
+                            set1.add(patientData.getPatient_mrn());
+                            contactMap.put(mrns, set1);
+                        }
                         Launcher.contactMongo.setContactMap(contactMap);
                         Launcher.contactMongo.update();
                     }

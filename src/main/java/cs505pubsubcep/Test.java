@@ -17,7 +17,7 @@ public class Test {
 
         ContactMongo contactMongo = new ContactMongo(mongoEngine, mongoDatabase);
 
-        ArrayList<String> cList = contactMongo.getContactList("ca1976c1-beda-11ec-8eab-b9440ee2d45c");
+        ArrayList<String> cList = contactMongo.getContactList("a1e38e61-bf41-11ec-8eab-b9440ee2d45c");
         eventMongo.getEventContactList(cList);
 //        ArrayList<String> cList = contactMongo.getContactList("ca1976c0-beda-11ec-8eab-b9440ee2d45c");
 
