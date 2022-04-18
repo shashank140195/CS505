@@ -17,6 +17,8 @@ import org.bson.types.ObjectId;
  import java.util.Arrays;
  import java.util.ArrayList;
 
+import org.bson.Document;
+
  import static com.mongodb.client.model.Filters.*;
  import static com.mongodb.client.model.Updates.*;
 
@@ -28,15 +30,40 @@ public class MongoEngine {
 
         client = MongoClients.create("mongodb+srv://diginova:diginova@cluster0.dqmo2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 
-//        MongoDatabase database = client.getDatabase("CS505Doc");
-//        MongoCollection<Document> teamdb = database.getCollection("teamdb");
-//        FindIterable<Document> team = teamdb.find();
-//        System.out.println("teamdb: "+team.first());
-
 
     }
 
-    public void connect(){
+    public boolean delete(MongoDatabase mongoDatabase, String collectionName){
+        boolean success= true;
+
+        BasicDBObject document = new BasicDBObject();
+
+        try {
+
+            MongoCollection collection = mongoDatabase.getCollection(collectionName);
+            // Delete All documents from collection Using blank BasicDBObject
+            collection.deleteMany(document);
+            System.out.println("Successfully deleted data documents in "+collectionName);
+        }catch (Exception e){
+            e.printStackTrace();
+            success=false;
+        }
+
+        return success;
+    }
+
+    public boolean insert(Document document , MongoDatabase mongoDatabase, String collectionName){
+        boolean succcess = true;
+        try {
+            MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
+            ObjectId objectId = new ObjectId();
+            collection.insertOne(document.append("_id", objectId));
+            System.out.println("Successfully inserted _id: "+ document.get("_id"));
+        } catch (MongoException me) {
+            System.err.println("Unable to insert due to an error: " + me);
+            succcess=false;
+        }
+        return succcess;
 
     }
 }

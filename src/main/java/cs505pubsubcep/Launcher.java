@@ -1,11 +1,16 @@
 package cs505pubsubcep;
 
+import com.mongodb.client.MongoDatabase;
 import cs505pubsubcep.CEP.CEPEngine;
 import cs505pubsubcep.Topics.TopicConnector;
+import cs505pubsubcep.Utils.ContactMongo;
+import cs505pubsubcep.Utils.EventMongo;
+import cs505pubsubcep.Utils.PatientMongo;
 import cs505pubsubcep.database.DerbyDBEngine;
 import cs505pubsubcep.database.MongoEngine;
 import cs505pubsubcep.database.NeoEngine;
 
+import org.bson.Document;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -34,10 +39,49 @@ public class Launcher {
 
     public static CEPEngine cepEngine = null;
 
+    public static MongoEngine mongoEngine;
+
+    public static  MongoDatabase mongoDatabase;
+
+
+    public static EventMongo eventMongo;
+
+    public static ContactMongo contactMongo;
+
+
+
+
     public static void main(String[] args) throws IOException {
 
         // DerbyDBEngine derbyDBEngine = new DerbyDBEngine();
-        new MongoEngine();
+        mongoEngine = new MongoEngine();
+
+        mongoDatabase = mongoEngine.client.getDatabase("CS505Doc");
+
+        mongoEngine.delete(mongoDatabase, "patient");
+
+
+
+
+        mongoEngine.delete(mongoDatabase, "event");
+
+        Document doc = new Document();
+        doc.append("type","event");
+        mongoEngine.insert(doc, mongoDatabase, "event");
+
+        mongoEngine.delete(mongoDatabase, "contact");
+
+        doc = new Document();
+        doc.append("type","contact");
+        mongoEngine.insert(doc, mongoDatabase, "contact");
+
+        eventMongo = new EventMongo(mongoEngine, mongoDatabase);
+
+        contactMongo = new ContactMongo(mongoEngine, mongoDatabase);
+
+
+
+
 
 //        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
 //

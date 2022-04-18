@@ -12,11 +12,10 @@ import cs505pubsubcep.CEP.accessRecord;
 import cs505pubsubcep.Models.Hospital;
 import cs505pubsubcep.Models.Patient;
 import cs505pubsubcep.Models.Vaccination;
+import org.bson.Document;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class TopicConnector {
@@ -109,6 +108,43 @@ public class TopicConnector {
 
                         //send input event to CEP
                         Launcher.cepEngine.input(Launcher.inputStreamName, inputEvent);
+                    }
+                    Document document = new Document();
+                    document.append("testing_id",patientData.getTesting_id());
+                    document.append("patient_name",patientData.getPatient_name());
+                    document.append("patient_mrn",patientData.getPatient_mrn());
+                    document.append("patient_zipcode",patientData.getPatient_zipcode());
+                    document.append("patient_status",patientData.getPatient_status());
+                    document.append("contact_list",patientData.getContact_list());
+                    document.append("event_list",patientData.getEvent_list());
+                    if(Launcher.mongoEngine.insert(document, Launcher.mongoDatabase, "patient")){
+                        System.out.println("Successfully inserted patient");
+                    }else{
+                        System.out.println("Not Successfully inserted patient");
+                    }
+
+                    //Make a map for the contact list
+                    Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();
+                    Set<String> tmp = new TreeSet<String>();
+                    for(String mrn1 : patientData.getContact_list()){
+                        if(!mrn1.equals(patientData.getPatient_mrn())){
+                            tmp.add(mrn1);
+                        }
+                    }
+                    if(tmp.size()>0){
+                        contactMap.put(patientData.getPatient_mrn(), tmp);
+                        Launcher.contactMongo.setContactMap(contactMap);
+                        Launcher.contactMongo.update();
+                    }
+
+                    //make map for event list
+                    Map<String, String > eventMap = new HashMap<String, String >();
+                    for(String ev : patientData.getEvent_list()){
+                        eventMap.put(ev, patientData.getPatient_mrn());
+                    }
+                    if(eventMap.size()>0){
+                        Launcher.eventMongo.setEventMap(eventMap);
+                        Launcher.eventMongo.update();
                     }
                 }
 

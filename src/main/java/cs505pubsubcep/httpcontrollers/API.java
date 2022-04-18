@@ -8,10 +8,7 @@ import cs505pubsubcep.CEP.accessRecord;
 import cs505pubsubcep.Launcher;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.PrintWriter;
@@ -98,6 +95,68 @@ public class API {
     }
 
     @GET
+    @Path("/getconfirmedcontacts/{mrn}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getConfirmedContacts(@HeaderParam("X-Auth-API-Key") String authKey,
+                                         @PathParam("mrn") String mrn) {
+        String responseString = "{}";
+        try {
+
+            ArrayList<String> cList = Launcher.contactMongo.getContactList(mrn);
+            Map<String,Object> res = new HashMap<String, Object>();
+            res.put("contactlist", cList);
+//            if(cList.size()>0) {
+//                res.put("contactlist", cList.get(0));
+//            }else{
+//                res.put("contactlist", cList);
+//            }
+            responseString = gson.toJson(res);
+
+        } catch (Exception ex) {
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            ex.printStackTrace();
+
+            return Response.status(500).entity(exceptionAsString).build();
+        }
+        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
+    }
+
+    @GET
+    @Path("/getpossiblecontacts/{mrn}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPossibleContacts(@HeaderParam("X-Auth-API-Key") String authKey,
+                                         @PathParam("mrn") String mrn) {
+        String responseString = "{}";
+        try {
+
+            ArrayList<String> cList = Launcher.contactMongo.getContactList(mrn);
+            Map<String, Object> res = new HashMap<String, Object>();
+            if(cList.size()>0 && cList!=null) {
+//                res.put("contactlist", cList.get(0));
+                Map<String, ArrayList<String>> res1 = Launcher.eventMongo.getEventContactList(cList);
+                res.put("contactlist", res1);
+            }else{
+                res.put("contactlist", cList);
+            }
+
+            responseString = gson.toJson(res);
+
+        } catch (Exception ex) {
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            ex.printStackTrace();
+
+            return Response.status(500).entity(exceptionAsString).build();
+        }
+        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
+    }
+
+    @GET
     @Path("/getteam")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTeam(@HeaderParam("X-Auth-API-Key") String authKey) {
@@ -107,8 +166,8 @@ public class API {
 
             final Type teamType = new TypeToken<List<Team>>(){}.getType();
 
-            MongoDatabase database = MongoEngine.client.getDatabase("CS505Doc");
-            MongoCollection<Document> teamdb = database.getCollection("teamdb");
+//            MongoDatabase database = Launcher.mongoEngine.client.getDatabase("CS505Doc");
+            MongoCollection<Document> teamdb = Launcher.mongoDatabase.getCollection("teamdb");
             FindIterable<Document> team = teamdb.find();
             System.out.println("teamdb: "+team.first());
 //            Team team1 = gson.fromJson(team.first().toString(), teamType);
@@ -124,10 +183,6 @@ public class API {
             res.put("team_member_sids", sidAList);
             res.put("app_status_code", Integer.parseInt((String) team.first().get("app_status_code")));
             responseString = gson.toJson(res);
-//            //generate a response
-//            Map<String,Set<Integer>> responseMap = new HashMap<>();
-//            responseMap.put("ziplist",Launcher.common);
-//            responseString = gson.toJson(responseMap);
 
 
         } catch (Exception ex) {
