@@ -236,7 +236,7 @@ public class API {
         String responseString = "{}";
         Map<String, Object> res = new HashMap<String, Object>();
         try {
-            int status = (Launcher.common.size()>0)?1:0;
+            int status = (Launcher.common.size()>=5)?1:0;
             res.put("state_status", status);
             responseString = gson.toJson(res);
 
