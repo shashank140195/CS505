@@ -84,55 +84,6 @@ public class Launcher {
         vaccineMongo = new VaccineMongo(mongoEngine, mongoDatabase);
         vaccineMongo.delete();
 
-//        mongoEngine.delete(mongoDatabase, "patient");
-//
-//
-//
-//
-//        mongoEngine.delete(mongoDatabase, "event");
-
-//        Document doc = new Document();
-//        doc.append("type","event");
-//        mongoEngine.insert(doc, mongoDatabase, "event");
-
-//        mongoEngine.delete(mongoDatabase, "contact");
-
-//        doc = new Document();
-//        doc.append("type","contact");
-//        mongoEngine.insert(doc, mongoDatabase, "contact");
-
-//        patientMongo.delete();
-
-
-
-//        mongoEngine.delete(mongoDatabase, "hospital");
-
-//        hospitalMongo.delete();
-
-
-
-//        mongoEngine.delete(mongoDatabase, "vaccine");
-
-//        vaccineMongo.delete();
-
-
-
-
-
-//        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
-//
-//        String user = "neo4j";
-//        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
-//
-//        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
-//            app.clear();
-////            app.createFriendship("Alice", "David");
-////            app.findPerson("Alice");
-//        }catch(Exception ex){
-//            ex.printStackTrace();
-//        }
-
-        
         System.out.println("Starting CEP...");
 
         cepEngine = new CEPEngine();
