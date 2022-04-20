@@ -99,17 +99,24 @@ public class API {
 
     public boolean reset(){
         try {
-            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "patient");
-            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "event");
+//            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "patient");
+//            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "event");
+            Launcher.eventMongo.delete();
             Document doc = new Document();
             doc.append("type", "event");
-            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "event");
-            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "contact");
+            Launcher.eventMongo.insert(doc);
+//            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "event");
+//            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "contact");
+            Launcher.contactMongo.delete();
             doc = new Document();
             doc.append("type", "contact");
-            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "contact");
-            Launcher.eventMongo = new EventMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
-            Launcher.contactMongo = new ContactMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
+            Launcher.contactMongo.insert(doc);
+//            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "contact");
+//            Launcher.eventMongo = new EventMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
+//            Launcher.contactMongo = new ContactMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
+
+            Launcher.vaccineMongo.delete();
+            Launcher.hospitalMongo.delete();
             return true;
         }catch (Exception ex){
             ex.printStackTrace();
@@ -160,6 +167,95 @@ public class API {
 //            }else{
 //                res.put("contactlist", cList);
 //            }
+            responseString = gson.toJson(res);
+
+        } catch (Exception ex) {
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            ex.printStackTrace();
+
+            return Response.status(500).entity(exceptionAsString).build();
+        }
+        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
+    }
+
+
+    ///api/getpatientstatus/{hospital_id}
+    @GET
+    @Path("/getpatientstatus/{hospital_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSpecificHospitalStatus(@HeaderParam("X-Auth-API-Key") String authKey,
+                                        @PathParam("hospital_id") String hid) {
+        String responseString = "{}";
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        String[] statusNames = {"in", "icu", "vent"};
+        String constKeyCount = "_patient_count";
+        String constKeyVax = "_patient_vax";
+        try {
+            //in-paitent = 1, icu = 2, vent =3
+
+            System.out.println("For hid: "+hid);
+            FindIterable<Document> hosSpecificData = Launcher.hospitalMongo.getSpecificHospitalData(hid);
+            int countAll[] = {0,0,0};
+            double[] vaxAll = {0.0, 0.0, 0.0};
+            for(Document tmpHos : hosSpecificData){
+                countAll[(Integer) tmpHos.get("patient_status")-1]++;
+                if(Launcher.vaccineMongo.getVaccinationData((String) tmpHos.get("patient_mrn"))){
+                    vaxAll[(Integer) tmpHos.get("patient_status")-1]++;
+                }
+            }
+
+            for(int status=0;status<3;status++){
+                res.put(statusNames[status]+constKeyCount, countAll[status]);
+                res.put(statusNames[status]+constKeyVax, ((countAll[status]>0)?vaxAll[status]/countAll[status]:0));
+//                System.out.println("Status : "+status+" Count: "+countAll[status]+" Vax: "+((countAll[status]>0)?vaxAll[status]/countAll[status]:0));
+            }
+            responseString = gson.toJson(res);
+
+        } catch (Exception ex) {
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            ex.printStackTrace();
+
+            return Response.status(500).entity(exceptionAsString).build();
+        }
+        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
+    }
+
+
+    @GET
+    @Path("/getpatientstatus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllHospitalStatus(@HeaderParam("X-Auth-API-Key") String authKey) {
+        String responseString = "{}";
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        String[] statusNames = {"in", "icu", "vent"};
+        String constKeyCount = "_patient_count";
+        String constKeyVax = "_patient_vax";
+        try {
+            //in-paitent = 1, icu = 2, vent =3
+
+            FindIterable<Document> hosSpecificData = Launcher.hospitalMongo.getAllHospitalData();
+            int count[] = {0,0,0};
+            double[] vax = {0.0, 0.0, 0.0};
+            for(Document tmpHos : hosSpecificData){
+                count[(Integer) tmpHos.get("patient_status")-1]++;
+                if(Launcher.vaccineMongo.getVaccinationData((String) tmpHos.get("patient_mrn"))){
+                    vax[(Integer) tmpHos.get("patient_status")-1]++;
+                }
+            }
+
+            for(int status=0;status<3;status++){
+                res.put(statusNames[status]+constKeyCount, count[status]);
+                res.put(statusNames[status]+constKeyVax, ((count[status]>0)?vax[status]/count[status]:0));
+//                System.out.println("Status : "+status+" Count: "+countAll[status]+" Vax: "+((countAll[status]>0)?vaxAll[status]/countAll[status]:0));
+            }
             responseString = gson.toJson(res);
 
         } catch (Exception ex) {

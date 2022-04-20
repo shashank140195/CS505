@@ -3,9 +3,7 @@ package cs505pubsubcep;
 import com.mongodb.client.MongoDatabase;
 import cs505pubsubcep.CEP.CEPEngine;
 import cs505pubsubcep.Topics.TopicConnector;
-import cs505pubsubcep.Utils.ContactMongo;
-import cs505pubsubcep.Utils.EventMongo;
-import cs505pubsubcep.Utils.PatientMongo;
+import cs505pubsubcep.Utils.*;
 import cs505pubsubcep.database.DerbyDBEngine;
 import cs505pubsubcep.database.MongoEngine;
 import cs505pubsubcep.database.NeoEngine;
@@ -49,6 +47,13 @@ public class Launcher {
     public static ContactMongo contactMongo;
 
 
+    public static HospitalMongo hospitalMongo;
+
+    public static VaccineMongo vaccineMongo;
+
+    public static PatientMongo patientMongo;
+
+
 
 
     public static void main(String[] args) throws IOException {
@@ -58,26 +63,55 @@ public class Launcher {
 
         mongoDatabase = mongoEngine.client.getDatabase("CS505Doc");
 
-        mongoEngine.delete(mongoDatabase, "patient");
-
-
-
-
-        mongoEngine.delete(mongoDatabase, "event");
-
+        eventMongo = new EventMongo(mongoEngine, mongoDatabase);
+        eventMongo.delete();
         Document doc = new Document();
         doc.append("type","event");
-        mongoEngine.insert(doc, mongoDatabase, "event");
-
-        mongoEngine.delete(mongoDatabase, "contact");
-
-        doc = new Document();
-        doc.append("type","contact");
-        mongoEngine.insert(doc, mongoDatabase, "contact");
-
-        eventMongo = new EventMongo(mongoEngine, mongoDatabase);
+        eventMongo.insert(doc);
 
         contactMongo = new ContactMongo(mongoEngine, mongoDatabase);
+        contactMongo.delete();
+        doc = new Document();
+        doc.append("type","contact");
+        contactMongo.insert(doc);
+
+        patientMongo = new PatientMongo(mongoEngine, mongoDatabase);
+        patientMongo.delete();
+
+        hospitalMongo = new HospitalMongo(mongoEngine, mongoDatabase);
+
+        vaccineMongo = new VaccineMongo(mongoEngine, mongoDatabase);
+
+//        mongoEngine.delete(mongoDatabase, "patient");
+//
+//
+//
+//
+//        mongoEngine.delete(mongoDatabase, "event");
+
+//        Document doc = new Document();
+//        doc.append("type","event");
+//        mongoEngine.insert(doc, mongoDatabase, "event");
+
+//        mongoEngine.delete(mongoDatabase, "contact");
+
+//        doc = new Document();
+//        doc.append("type","contact");
+//        mongoEngine.insert(doc, mongoDatabase, "contact");
+
+//        patientMongo.delete();
+
+
+
+//        mongoEngine.delete(mongoDatabase, "hospital");
+
+//        hospitalMongo.delete();
+
+
+
+//        mongoEngine.delete(mongoDatabase, "vaccine");
+
+//        vaccineMongo.delete();
 
 
 

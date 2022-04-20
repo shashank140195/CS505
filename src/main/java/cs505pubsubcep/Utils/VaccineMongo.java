@@ -2,17 +2,37 @@ package cs505pubsubcep.Utils;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import cs505pubsubcep.database.MongoEngine;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-public class PatientMongo implements DBImpl{
+import javax.print.Doc;
+
+public class VaccineMongo implements DBImpl{
+
     public MongoEngine mongoEngine;
     public MongoDatabase mongoDatabase;
     public MongoCollection<Document> collection;
-    public String COLLECTION_NAME = "patient";
+    public String COLLECTION_NAME = "vaccine";
+
+    public MongoEngine getMongoEngine() {
+        return mongoEngine;
+    }
+
+    public void setMongoEngine(MongoEngine mongoEngine) {
+        this.mongoEngine = mongoEngine;
+    }
+
+    public MongoDatabase getMongoDatabase() {
+        return mongoDatabase;
+    }
+
+    public void setMongoDatabase(MongoDatabase mongoDatabase) {
+        this.mongoDatabase = mongoDatabase;
+    }
 
     public MongoCollection<Document> getCollection() {
         return collection;
@@ -22,27 +42,10 @@ public class PatientMongo implements DBImpl{
         this.collection = collection;
     }
 
-    public PatientMongo(MongoEngine mongoEngine, MongoDatabase mongoDatabase) {
+    public VaccineMongo(MongoEngine mongoEngine, MongoDatabase mongoDatabase) {
         this.mongoEngine = mongoEngine;
         this.mongoDatabase = mongoDatabase;
-        this.collection = this.mongoDatabase.getCollection("patient");
-    }
-
-
-    public MongoEngine getMongoEngine() {
-        return this.mongoEngine;
-    }
-
-    public void setMongoEngine(MongoEngine mongoEngine) {
-        this.mongoEngine = mongoEngine;
-    }
-
-    public MongoDatabase getMongoDatabase() {
-        return this.mongoDatabase;
-    }
-
-    public void setMongoDatabase(MongoDatabase mongoDatabase) {
-        this.mongoDatabase = mongoDatabase;
+        this.collection = this.mongoDatabase.getCollection(COLLECTION_NAME);
     }
 
     @Override
@@ -83,5 +86,20 @@ public class PatientMongo implements DBImpl{
             succcess=false;
         }
         return succcess;
+    }
+
+    public boolean getVaccinationData(String mrn){
+        boolean isVaccinated=false;
+        Document vaxData = new Document();
+        vaxData.append("patient_mrn", mrn);
+        FindIterable<Document> patVaxData = this.collection.find(vaxData);
+        if(patVaxData!=null){
+            for(Document vax : patVaxData){
+//                System.out.println(vax.get("patient_mrn") + " is vaccinated. vax id: "+vax.get("vaccination_id"));
+                isVaccinated=true;
+            }
+        }
+
+        return isVaccinated;
     }
 }

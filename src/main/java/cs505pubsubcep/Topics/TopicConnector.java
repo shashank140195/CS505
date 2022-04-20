@@ -14,6 +14,7 @@ import cs505pubsubcep.Models.Patient;
 import cs505pubsubcep.Models.Vaccination;
 import org.bson.Document;
 
+import javax.print.Doc;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -117,11 +118,11 @@ public class TopicConnector {
                     document.append("patient_status",patientData.getPatient_status());
                     document.append("contact_list",patientData.getContact_list());
                     document.append("event_list",patientData.getEvent_list());
-                    if(Launcher.mongoEngine.insert(document, Launcher.mongoDatabase, "patient")){
-                        System.out.println("Successfully inserted patient");
-                    }else{
-                        System.out.println("Not Successfully inserted patient");
-                    }
+//                    if(Launcher.mongoEngine.insert(document, Launcher.mongoDatabase, "patient")){
+//                        System.out.println("Successfully inserted patient");
+//                    }else{
+//                        System.out.println("Not Successfully inserted patient");
+//                    }
 
                     //Make a map for the contact list
                     Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();
@@ -221,6 +222,19 @@ public class TopicConnector {
                     System.out.println("\tpatient_name = " + hospitalData.getPatient_name());
                     System.out.println("\tpatient_mrn = " + hospitalData.getPatient_mrn());
                     System.out.println("\tpatient_status = " + hospitalData.getPatient_status());
+
+                    Document hospitalDocument = new Document();
+                    hospitalDocument.append("hospital_id", hospitalData.getHospital_id());
+                    hospitalDocument.append("patient_mrn", hospitalData.getPatient_mrn());
+                    hospitalDocument.append("patient_status", hospitalData.getPatient_status());
+
+                    if(Launcher.hospitalMongo.insert(hospitalDocument)){
+                        System.out.println("Inserted successfully into "+ Launcher.hospitalMongo.COLLECTION_NAME);
+                    }else{
+                        System.out.println("Error inserting data into "+ Launcher.hospitalMongo.COLLECTION_NAME);
+                    }
+
+
                 }
 
                 };
@@ -261,6 +275,16 @@ public class TopicConnector {
                     System.out.println("\tvaccination_id = " + vaxData.getVaccination_id());
                     System.out.println("\tpatient_name = " + vaxData.getPatient_name());
                     System.out.println("\tpatient_mrn = " + vaxData.getPatient_mrn());
+
+                    Document vaxDocument = new Document();
+                    vaxDocument.append("vaccination_id", vaxData.getVaccination_id());
+                    vaxDocument.append("patient_mrn", vaxData.getPatient_mrn());
+
+                    if(Launcher.vaccineMongo.insert(vaxDocument)){
+                        System.out.println("Successfully inserted data into "+Launcher.vaccineMongo.COLLECTION_NAME);
+                    }else{
+                        System.out.println("Error inserting data into "+ Launcher.vaccineMongo.COLLECTION_NAME);
+                    }
                 }
 
             };

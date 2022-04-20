@@ -1,6 +1,8 @@
 package cs505pubsubcep.Utils;
 
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -8,6 +10,7 @@ import com.mongodb.client.model.*;
 import cs505pubsubcep.database.MongoEngine;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord;
 
 import javax.print.Doc;
@@ -20,6 +23,7 @@ public class ContactMongo implements DBImpl{
     public MongoEngine mongoEngine;
     public MongoDatabase mongoDatabase;
     public MongoCollection<Document> collection;
+    public String COLLECTION_NAME = "contact";
 
 
     public Map<String, Set<String>> contactMap;
@@ -43,7 +47,7 @@ public class ContactMongo implements DBImpl{
     public ContactMongo(MongoEngine mongoEngine, MongoDatabase mongoDatabase) {
         this.mongoEngine = mongoEngine;
         this.mongoDatabase = mongoDatabase;
-        this.collection = this.mongoDatabase.getCollection("contact");
+        this.collection = this.mongoDatabase.getCollection(COLLECTION_NAME);
         System.out.println("Inilialized mongo - contact");
     }
 
@@ -90,7 +94,39 @@ public class ContactMongo implements DBImpl{
 
     @Override
     public boolean delete() {
-        return false;
+
+        boolean success= true;
+
+        BasicDBObject document = new BasicDBObject();
+
+        try {
+
+            MongoCollection collection = mongoDatabase.getCollection(COLLECTION_NAME);
+            // Delete All documents from collection Using blank BasicDBObject
+            collection.deleteMany(document);
+            System.out.println("Successfully deleted data documents in "+COLLECTION_NAME);
+        }catch (Exception e){
+            e.printStackTrace();
+            success=false;
+        }
+
+        return success;
+
+    }
+
+    @Override
+    public boolean insert(Document document) {
+        boolean succcess = true;
+        try {
+            MongoCollection<Document> collection = mongoDatabase.getCollection(COLLECTION_NAME);
+            ObjectId objectId = new ObjectId();
+            collection.insertOne(document.append("_id", objectId));
+            System.out.println("Successfully inserted _id: "+ document.get("_id")+" to "+COLLECTION_NAME);
+        } catch (MongoException me) {
+            System.err.println("Unable to insert due to an error: " + me);
+            succcess=false;
+        }
+        return succcess;
     }
 
     public ArrayList<String> getContactList(String mrn){
