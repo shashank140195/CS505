@@ -79,8 +79,10 @@ public class Launcher {
         patientMongo.delete();
 
         hospitalMongo = new HospitalMongo(mongoEngine, mongoDatabase);
+        hospitalMongo.delete();
 
         vaccineMongo = new VaccineMongo(mongoEngine, mongoDatabase);
+        vaccineMongo.delete();
 
 //        mongoEngine.delete(mongoDatabase, "patient");
 //
