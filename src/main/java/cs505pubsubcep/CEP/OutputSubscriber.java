@@ -137,6 +137,7 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
                 }
             }
             System.out.println(zipMap.toString());
+            Launcher.common.clear();
             if(Launcher.zipAlertCount!=null){
                 System.out.println("Zip alert list is not null");
                 for(Integer key : zipMap.keySet()){
