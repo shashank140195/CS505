@@ -27,6 +27,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.*;
 import cs505pubsubcep.Models.Team;
+import cs505pubsubcep.Utils.Constants;
 import cs505pubsubcep.Models.Vaccination;
 import cs505pubsubcep.Utils.ContactMongo;
 import cs505pubsubcep.Utils.EventMongo;
@@ -236,7 +237,7 @@ public class API {
         String responseString = "{}";
         Map<String, Object> res = new HashMap<String, Object>();
         try {
-            int status = (Launcher.common.size()>=5)?1:0;
+            int status = (Launcher.common.size()>=Constants.ZIP_ALERT_LENGTH)?1:0;
             res.put("state_status", status);
             responseString = gson.toJson(res);
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import cs505pubsubcep.Launcher;
+import cs505pubsubcep.Utils.Constants;
 import io.siddhi.core.util.transport.InMemoryBroker;
 import io.siddhi.query.api.expression.condition.In;
 
@@ -142,7 +143,7 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
                 System.out.println("Zip alert list is not null");
                 for(Integer key : zipMap.keySet()){
                     if(Launcher.zipAlertCount.containsKey(key)){
-                        if(zipMap.get(key)>=2*Launcher.zipAlertCount.get(key)) {
+                        if(zipMap.get(key)>=(Constants.ZIP_MULTIPLIER * Launcher.zipAlertCount.get(key))) {
                             Launcher.common.add(key);
                         }
                     }
@@ -176,5 +177,4 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
     public String getTopic() {
         return topic;
     }
-
 }
