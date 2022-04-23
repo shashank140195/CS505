@@ -7,49 +7,71 @@ import cs505pubsubcep.Utils.EventMongo;
 import cs505pubsubcep.Utils.HospitalMongo;
 import cs505pubsubcep.Utils.VaccineMongo;
 import cs505pubsubcep.database.MongoEngine;
+import cs505pubsubcep.database.NeoEngine;
 import org.bson.Document;
+import org.neo4j.driver.Config;
 
 import java.util.ArrayList;
 
 public class Test {
 
-    public static void main(String args[]){
+    public static void main(String args[]) throws Exception {
         System.out.println("test");
-        MongoEngine mongoEngine = new MongoEngine();
-        MongoDatabase mongoDatabase = mongoEngine.client.getDatabase("CS505Doc");
 
-        HospitalMongo hospitalMongo = new HospitalMongo(mongoEngine, mongoDatabase);
-        VaccineMongo vaccineMongo = new VaccineMongo(mongoEngine, mongoDatabase);
-        FindIterable<Document> hosAllData = hospitalMongo.getAllHospitalData();
-        int count[] = {0,0,0};
-        double[] vax = {0.0, 0.0, 0.0};
-        for(Document tmpHos : hosAllData){
-            count[(Integer) tmpHos.get("patient_status")-1]++;
-            if(vaccineMongo.getVaccinationData((String) tmpHos.get("patient_mrn"))){
-                vax[(Integer) tmpHos.get("patient_status")-1]++;
-            }
+        /*
+
+
+        neo4j
+         */
+
+        // Aura queries use an encrypted connection using the "neo4j+s" protocol
+        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
+
+        String user = "neo4j";
+        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
+
+        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
+            app.createFriendship("Alice", "David");
+            app.findPerson("Alice");
         }
 
-        for(int status=0;status<3;status++){
-            System.out.println("Status : "+status+" Count: "+count[status]+" Vax: "+((count[status]>0)?vax[status]/count[status]:0));
-        }
 
-        //hid specific hospital
-        String hid = "640143";
-        System.out.println("For hid: "+hid);
-        FindIterable<Document> hosSpecificData = hospitalMongo.getSpecificHospitalData(hid);
-        int countAll[] = {0,0,0};
-        double[] vaxAll = {0.0, 0.0, 0.0};
-        for(Document tmpHos : hosSpecificData){
-            countAll[(Integer) tmpHos.get("patient_status")-1]++;
-            if(vaccineMongo.getVaccinationData((String) tmpHos.get("patient_mrn"))){
-                vaxAll[(Integer) tmpHos.get("patient_status")-1]++;
-            }
-        }
 
-        for(int status=0;status<3;status++){
-            System.out.println("Status : "+status+" Count: "+countAll[status]+" Vax: "+((countAll[status]>0)?vaxAll[status]/countAll[status]:0));
-        }
+//        MongoEngine mongoEngine = new MongoEngine();
+//        MongoDatabase mongoDatabase = mongoEngine.client.getDatabase("CS505Doc");
+//
+//        HospitalMongo hospitalMongo = new HospitalMongo(mongoEngine, mongoDatabase);
+//        VaccineMongo vaccineMongo = new VaccineMongo(mongoEngine, mongoDatabase);
+//        FindIterable<Document> hosAllData = hospitalMongo.getAllHospitalData();
+//        int count[] = {0,0,0};
+//        double[] vax = {0.0, 0.0, 0.0};
+//        for(Document tmpHos : hosAllData){
+//            count[(Integer) tmpHos.get("patient_status")-1]++;
+//            if(vaccineMongo.getVaccinationData((String) tmpHos.get("patient_mrn"))){
+//                vax[(Integer) tmpHos.get("patient_status")-1]++;
+//            }
+//        }
+//
+//        for(int status=0;status<3;status++){
+//            System.out.println("Status : "+status+" Count: "+count[status]+" Vax: "+((count[status]>0)?vax[status]/count[status]:0));
+//        }
+//
+//        //hid specific hospital
+//        String hid = "640143";
+//        System.out.println("For hid: "+hid);
+//        FindIterable<Document> hosSpecificData = hospitalMongo.getSpecificHospitalData(hid);
+//        int countAll[] = {0,0,0};
+//        double[] vaxAll = {0.0, 0.0, 0.0};
+//        for(Document tmpHos : hosSpecificData){
+//            countAll[(Integer) tmpHos.get("patient_status")-1]++;
+//            if(vaccineMongo.getVaccinationData((String) tmpHos.get("patient_mrn"))){
+//                vaxAll[(Integer) tmpHos.get("patient_status")-1]++;
+//            }
+//        }
+//
+//        for(int status=0;status<3;status++){
+//            System.out.println("Status : "+status+" Count: "+countAll[status]+" Vax: "+((countAll[status]>0)?vaxAll[status]/countAll[status]:0));
+//        }
 
 //        hospitalMongo.getSpecificHospitalData("640143");
 //        EventMongo eventMongo = new EventMongo(mongoEngine, mongoDatabase);

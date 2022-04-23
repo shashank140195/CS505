@@ -18,6 +18,8 @@ import javax.print.Doc;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import cs505pubsubcep.Utils.Constants;
+
 
 public class TopicConnector {
 
@@ -54,6 +56,9 @@ public class TopicConnector {
             factory.setUsername(config.get("username"));
             factory.setPassword(config.get("password"));
             factory.setVirtualHost(config.get("virtualhost"));
+            factory.setAutomaticRecoveryEnabled(true);
+            factory.setNetworkRecoveryInterval(1000);
+            factory.setRequestedHeartbeat(5);
 
             //create a connection, many channels can be created from a single connection
             Connection connection = factory.newConnection();
@@ -74,7 +79,7 @@ public class TopicConnector {
 
             System.out.println("Creating patient_list channel");
 
-            String topicName = "patient_list";
+            String topicName = Constants.PATIENT_TOPIC;//"patient_list";
 
             channel.exchangeDeclare(topicName, "topic");
             String queueName = channel.queueDeclare().getQueue();
@@ -127,9 +132,11 @@ public class TopicConnector {
                     //Make a map for the contact list
                     Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();
                     Set<String> tmp = new TreeSet<String>();
-                    for(String mrn1 : patientData.getContact_list()){
-                        if(!mrn1.equals(patientData.getPatient_mrn())){
-                            tmp.add(mrn1);
+                    if(patientData !=null && patientData.getContact_list()!=null) {
+                        for (String mrn1 : patientData.getContact_list()) {
+                            if (!mrn1.equals(patientData.getPatient_mrn())) {
+                                tmp.add(mrn1);
+                            }
                         }
                     }
                     if(tmp.size()>0){
@@ -145,8 +152,10 @@ public class TopicConnector {
 
                     //make map for event list
                     Map<String, String > eventMap = new HashMap<String, String >();
-                    for(String ev : patientData.getEvent_list()){
-                        eventMap.put(ev, patientData.getPatient_mrn());
+                    if(patientData.getEvent_list()!=null) {
+                        for (String ev : patientData.getEvent_list()) {
+                            eventMap.put(ev, patientData.getPatient_mrn());
+                        }
                     }
                     if(eventMap.size()>0){
                         Launcher.eventMongo.setEventMap(eventMap);
@@ -197,7 +206,7 @@ public class TopicConnector {
     private void hospitalListChannel(Channel channel) {
         try {
 
-            String topicName = "hospital_list";
+            String topicName = Constants.HOSPITAL_TOPIC;// "hospital_list";
 
             System.out.println("Creating hospital_list channel");
 
@@ -251,7 +260,7 @@ public class TopicConnector {
     private void vaxListChannel(Channel channel) {
         try {
 
-            String topicName = "vax_list";
+            String topicName = Constants.VACCINATION_TOPIC;// "vax_list";
 
             System.out.println("Creating vax_list channel");
 
