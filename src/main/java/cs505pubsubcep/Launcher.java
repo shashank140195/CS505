@@ -53,10 +53,19 @@ public class Launcher {
 
     public static PatientMongo patientMongo;
 
+    public static NeoEngine neoApp;
 
 
 
     public static void main(String[] args) throws IOException {
+
+        //neo4j
+        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
+
+        String user = "neo4j";
+        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
+
+        neoApp = new NeoEngine(uri, user, password, Config.defaultConfig());
 
         // DerbyDBEngine derbyDBEngine = new DerbyDBEngine();
         mongoEngine = new MongoEngine();

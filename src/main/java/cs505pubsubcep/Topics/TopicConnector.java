@@ -123,12 +123,9 @@ public class TopicConnector {
                     document.append("patient_status",patientData.getPatient_status());
                     document.append("contact_list",patientData.getContact_list());
                     document.append("event_list",patientData.getEvent_list());
-//                    if(Launcher.mongoEngine.insert(document, Launcher.mongoDatabase, "patient")){
-//                        System.out.println("Successfully inserted patient");
-//                    }else{
-//                        System.out.println("Not Successfully inserted patient");
-//                    }
-
+                    Launcher.neoApp.processEventMrn(patientData.getPatient_mrn(), patientData.getContact_list(),
+                            patientData.getEvent_list());
+                    System.out.println("Finished inserting data in neo4j!");
                     //Make a map for the contact list
                     Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();
                     Set<String> tmp = new TreeSet<String>();

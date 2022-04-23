@@ -12,6 +12,9 @@ import org.bson.Document;
 import org.neo4j.driver.Config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Test {
 
@@ -24,16 +27,59 @@ public class Test {
         neo4j
          */
 
+        String mainMRN = "b47197a2-c31b-11ec-859a-3af9d3a61d88";
+
+        List<String> contactList = new ArrayList<String>();
+        List<String> eventList = new ArrayList<String>();
+
+        contactList.add("4225fbc0-c2c1-11ec-ae31-3af9d3a61d88");
+//        contactList.add("4225fbf2-c2c1-11ec-ae31-3af9d3a61d88");
+
+
+        eventList.add("4225fa1c-c2c1-11ec-ae31-3af9d3a61d88");
+        eventList.add("4225fa58-c2c1-11ec-ae31-3af9d3a61d88");
+        eventList.add("4225fa58-c2c1-11ec-ae31-3af9d3a61d88");
+        eventList.add("4225fa1c-c2c1-11ec-ae31-3af9d3a61d88");
+
+
         // Aura queries use an encrypted connection using the "neo4j+s" protocol
         String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
 
         String user = "neo4j";
         String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
 
-        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
-            app.createFriendship("Alice", "David");
-            app.findPerson("Alice");
-        }
+        NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig());
+
+        app.getContactEvents("b47197a2-c31b-11ec-859a-3af9d3a61d88");
+        app.close();
+
+//        List<String> contactResultList = app.getContactMrn(mainMRN);
+//        System.out.println(contactResultList);
+//        app.close();
+//
+//
+//        app = new NeoEngine(uri, user, password, Config.defaultConfig());
+//        contactResultList = app.getContactMrn(mainMRN);
+//        System.out.println(contactResultList);
+//        app.close();
+
+//        String q = "match (n) return n";
+//        Map<String, Object> p = new HashMap<String, Object>();
+//        System.out.println("First");
+//        app.testQuery(q,p,"n");
+//
+//        System.out.println("Second");
+//        q = "match (p1:Patient)<-[r:contact]->(p2:Patient) where p1.mrn=$mrn return p2";
+//        p.clear();
+//        p.put("mrn","b47197a2-c31b-11ec-859a-3af9d3a61d88");
+//        app.testQuery(q,p,"p2");
+
+//        System.out.println("Second");
+//        app.testQuery(q,p);
+//        app.clear();
+//        app.testQuery(q,p);
+//        app.clear();
+//        app.processEventMrn(mainMRN, contactList, eventList);
 
 
 
