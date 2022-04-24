@@ -81,7 +81,7 @@ public class NeoEngine implements AutoCloseable {
         return null;
     }
 
-    public Map<String, ArrayList> getContactEvents(String mrn){
+    public Map<String, ArrayList<String>> getContactEvents(String mrn){
         /*
 
 
@@ -105,18 +105,18 @@ public class NeoEngine implements AutoCloseable {
         List<Record> masterRecord = runQuery(q, p);
 //        System.out.println(masterRecord);
 
-        Map<String, ArrayList> contactEventMap = new HashMap<String, ArrayList>();
+        Map<String, ArrayList<String>> contactEventMap = new HashMap<String, ArrayList<String>>();
         for(Record record : masterRecord){
 //            System.out.println(record);
             Node patNode = record.get("otherpat").asNode();
             Node evNode = record.get("e").asNode();
             System.out.println("Event: "+evNode.labels()+", patient: "+patNode.labels());
-            String eid = evNode.get("id").toString();
+            String eid = evNode.get("id").asString();
             if(!contactEventMap.containsKey(eid)){
                 contactEventMap.put(eid,  new ArrayList<String>());
             }
             for(String label1 : patNode.labels()){
-                String pmrn = patNode.get("mrn").toString();
+                String pmrn = patNode.get("mrn").asString();
                 contactEventMap.get(eid).add(pmrn);
             }
 
@@ -146,13 +146,17 @@ public class NeoEngine implements AutoCloseable {
 //            System.out.println("Keys: "+record.keys());
             Node node = record.get(key).asNode();
 //            System.out.println(node.labels());
-
-            for(String label : node.labels()){
-                String neighbour = String.valueOf(node.get("mrn"));
-                if(!neighbour.equals(mrn)) {
-                    contactMrn.add(String.valueOf(node.get("mrn")));
-                }
+            String neighbour = node.get("mrn").asString();
+            if(!neighbour.equals(mrn)) {
+                contactMrn.add(node.get("mrn").asString());
             }
+
+//            for(String label : node.labels()){
+//                String neighbour = String.valueOf(node.get("mrn"));
+//                if(!neighbour.equals(mrn)) {
+//                    contactMrn.add(String.valueOf(node.get("mrn")));
+//                }
+//            }
 
         }
 

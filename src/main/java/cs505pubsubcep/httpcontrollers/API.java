@@ -100,6 +100,9 @@ public class API {
 
     public boolean reset(){
         try {
+
+            System.out.println("Clearing neo4j!");
+            Launcher.neoApp.clear();
 //            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "patient");
 //            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "event");
             Launcher.eventMongo.delete();
@@ -160,14 +163,9 @@ public class API {
         String responseString = "{}";
         try {
 
-            ArrayList<String> cList = Launcher.contactMongo.getContactList(mrn);
+//            ArrayList<String> cList = Launcher.contactMongo.getContactList(mrn);
             Map<String,Object> res = new HashMap<String, Object>();
-            res.put("contactlist", cList);
-//            if(cList.size()>0) {
-//                res.put("contactlist", cList.get(0));
-//            }else{
-//                res.put("contactlist", cList);
-//            }
+            res.put("contactlist", Launcher.neoApp.getContactMrn(mrn));
             responseString = gson.toJson(res);
 
         } catch (Exception ex) {
@@ -305,16 +303,17 @@ public class API {
         String responseString = "{}";
         try {
 
-            ArrayList<String> cList = Launcher.contactMongo.getContactList(mrn);
+//            ArrayList<String> cList = Launcher.contactMongo.getContactList(mrn);
             Map<String, Object> res = new HashMap<String, Object>();
-            if(cList.size()>0 && cList!=null) {
-//                res.put("contactlist", cList.get(0));
-                Map<String, ArrayList<String>> res1 = Launcher.eventMongo.getEventContactList(cList);
-                res.put("contactlist", res1);
-            }else{
-                res.put("contactlist", cList);
-            }
+//            if(cList.size()>0 && cList!=null) {
+////                res.put("contactlist", cList.get(0));
+//                Map<String, ArrayList<String>> res1 = Launcher.eventMongo.getEventContactList(cList);
+//                res.put("contactlist", res1);
+//            }else{
+//                res.put("contactlist", cList);
+//            }
 
+            res.put("contactlist", (Map<String, ArrayList<String>>)Launcher.neoApp.getContactEvents(mrn));
             responseString = gson.toJson(res);
 
         } catch (Exception ex) {

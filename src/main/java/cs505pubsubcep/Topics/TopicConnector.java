@@ -125,6 +125,7 @@ public class TopicConnector {
                     document.append("event_list",patientData.getEvent_list());
                     Launcher.neoApp.processEventMrn(patientData.getPatient_mrn(), patientData.getContact_list(),
                             patientData.getEvent_list());
+
                     System.out.println("Finished inserting data in neo4j!");
                     //Make a map for the contact list
                     Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();

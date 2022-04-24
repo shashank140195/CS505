@@ -66,6 +66,7 @@ public class Launcher {
         String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
 
         neoApp = new NeoEngine(uri, user, password, Config.defaultConfig());
+        neoApp.clear();
 
         // DerbyDBEngine derbyDBEngine = new DerbyDBEngine();
         mongoEngine = new MongoEngine();

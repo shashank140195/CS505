@@ -50,7 +50,7 @@ public class Test {
 
         NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig());
 
-        app.getContactEvents("b47197a2-c31b-11ec-859a-3af9d3a61d88");
+        app.getContactEvents("eb1f22b8-c340-11ec-b618-3af9d3a61d88");
         app.close();
 
 //        List<String> contactResultList = app.getContactMrn(mainMRN);
