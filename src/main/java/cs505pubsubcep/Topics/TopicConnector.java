@@ -128,67 +128,39 @@ public class TopicConnector {
 
                     System.out.println("Finished inserting data in neo4j!");
                     //Make a map for the contact list
-                    Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();
-                    Set<String> tmp = new TreeSet<String>();
-                    if(patientData !=null && patientData.getContact_list()!=null) {
-                        for (String mrn1 : patientData.getContact_list()) {
-                            if (!mrn1.equals(patientData.getPatient_mrn())) {
-                                tmp.add(mrn1);
-                            }
-                        }
-                    }
-                    if(tmp.size()>0){
-                        contactMap.put(patientData.getPatient_mrn(), tmp);
-                        for(String mrns : tmp){
-                            Set<String> set1 = new TreeSet<String>();
-                            set1.add(patientData.getPatient_mrn());
-                            contactMap.put(mrns, set1);
-                        }
-                        Launcher.contactMongo.setContactMap(contactMap);
-                        Launcher.contactMongo.update();
-                    }
-
-                    //make map for event list
-                    Map<String, String > eventMap = new HashMap<String, String >();
-                    if(patientData.getEvent_list()!=null) {
-                        for (String ev : patientData.getEvent_list()) {
-                            eventMap.put(ev, patientData.getPatient_mrn());
-                        }
-                    }
-                    if(eventMap.size()>0){
-                        Launcher.eventMongo.setEventMap(eventMap);
-                        Launcher.eventMongo.update();
-                    }
+//                    Map<String, Set<String>> contactMap = new HashMap<String, Set<String>>();
+//                    Set<String> tmp = new TreeSet<String>();
+//                    if(patientData !=null && patientData.getContact_list()!=null) {
+//                        for (String mrn1 : patientData.getContact_list()) {
+//                            if (!mrn1.equals(patientData.getPatient_mrn())) {
+//                                tmp.add(mrn1);
+//                            }
+//                        }
+//                    }
+//                    if(tmp.size()>0){
+//                        contactMap.put(patientData.getPatient_mrn(), tmp);
+//                        for(String mrns : tmp){
+//                            Set<String> set1 = new TreeSet<String>();
+//                            set1.add(patientData.getPatient_mrn());
+//                            contactMap.put(mrns, set1);
+//                        }
+//                        Launcher.contactMongo.setContactMap(contactMap);
+//                        Launcher.contactMongo.update();
+//                    }
+//
+//                    //make map for event list
+//                    Map<String, String > eventMap = new HashMap<String, String >();
+//                    if(patientData.getEvent_list()!=null) {
+//                        for (String ev : patientData.getEvent_list()) {
+//                            eventMap.put(ev, patientData.getPatient_mrn());
+//                        }
+//                    }
+//                    if(eventMap.size()>0){
+//                        Launcher.eventMongo.setEventMap(eventMap);
+//                        Launcher.eventMongo.update();
+//                    }
                 }
 
-//                List<TestingData> incomingList = gson.fromJson(message, typeListTestingData);
-//                for (TestingData testingData : incomingList) {
-//                    System.out.println("*Java Class*");
-//                    System.out.println("\ttesting_id = " + testingData.testing_id);
-//                    System.out.println("\tpatient_name = " + testingData.patient_name);
-//                    System.out.println("\tpatient_mrn = " + testingData.patient_mrn);
-//                    System.out.println("\tpatient_zipcode = " + testingData.patient_zipcode);
-//                    System.out.println("\tpatient_status = " + testingData.patient_status);
-//                    System.out.println("\tcontact_list = " + testingData.contact_list);
-//                    System.out.println("\tevent_list = " + testingData.event_list);
-//
-//                    if(testingData.patient_status == 1){
-//                        System.out.println("Patient : "+testingData.patient_mrn+" is +++++++. Zip code is: "+testingData.patient_zipcode);
-//                        //generate event based on access
-//                        String inputEvent = gson.toJson(new accessRecord(String.valueOf(testingData.patient_zipcode), System.currentTimeMillis()));
-//                        System.out.println("inputEvent: " + inputEvent);
-//
-//                        //send input event to CEP
-//                        Launcher.cepEngine.input(Launcher.inputStreamName, inputEvent);
-//                    }
-//                }
-                //List<Map<String,String>> incomingList = gson.fromJson(message, typeOf);
-                //for(Map<String,String> map : incomingList) {
-                //    System.out.println("INPUT CEP EVENT: " +  map);
-                //Launcher.cepEngine.input(Launcher.inputStreamName, gson.toJson(map));
-                //}
-                System.out.println("");
-                System.out.println("");
 
             };
 
