@@ -64,3 +64,16 @@ Run in foreground:
 ```
     sudo docker run -it --rm -p 9000:9000 cs505-final
 ```
+
+## Running APIs
+1. ```
+   curl --header "X-Auth-API-key:1234" "http://<hostname>:<port#>/api/getteam"
+   ```
+2. ```
+   curl --header "X-Auth-API-key:1234" "http://<hostname>:<port#>/api/getpatientstatus"
+   ```
+3. ```
+   curl --header "X-Auth-API-key:1234" "http://<hostname>:<port#>/api/getalertlist"
+   ```
+
+*Check the collection **CS505_Final.postman_collection.json** *
