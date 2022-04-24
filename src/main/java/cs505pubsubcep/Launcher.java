@@ -4,7 +4,6 @@ import com.mongodb.client.MongoDatabase;
 import cs505pubsubcep.CEP.CEPEngine;
 import cs505pubsubcep.Topics.TopicConnector;
 import cs505pubsubcep.Utils.*;
-import cs505pubsubcep.database.DerbyDBEngine;
 import cs505pubsubcep.database.MongoEngine;
 import cs505pubsubcep.database.NeoEngine;
 
@@ -68,7 +67,6 @@ public class Launcher {
         neoApp = new NeoEngine(uri, user, password, Config.defaultConfig());
         neoApp.clear();
 
-        // DerbyDBEngine derbyDBEngine = new DerbyDBEngine();
         mongoEngine = new MongoEngine();
 
         mongoDatabase = mongoEngine.client.getDatabase("CS505Doc");

@@ -3,8 +3,6 @@ package cs505pubsubcep.httpcontrollers;
 import com.google.gson.Gson;
 
 import com.google.gson.reflect.TypeToken;
-import cs505pubsubcep.CEP.OutputSubscriber;
-import cs505pubsubcep.CEP.accessRecord;
 import cs505pubsubcep.Launcher;
 
 import javax.inject.Inject;
@@ -16,25 +14,12 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import com.mongodb.*;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.result.*;
 import cs505pubsubcep.Models.Team;
 import cs505pubsubcep.Utils.Constants;
-import cs505pubsubcep.Models.Vaccination;
-import cs505pubsubcep.Utils.ContactMongo;
-import cs505pubsubcep.Utils.EventMongo;
-import cs505pubsubcep.database.MongoEngine;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 @Path("/api")
 public class API {
@@ -49,75 +34,28 @@ public class API {
     }
 
     //check local
-    //curl --header "X-Auth-API-key:1234" "http://localhost:8082/api/checkmycep"
+    //curl --header "X-Auth-API-key:1234" "http://localhost:8082/api/getteam"
 
     //check remote
-    //curl --header "X-Auth-API-key:1234" "http://[linkblueid].cs.uky.edu:8082/api/checkmycep"
-    //curl --header "X-Auth-API-key:1234" "http://localhost:8081/api/checkmycep"
+    //curl --header "X-Auth-API-key:1234" "http://[linkblueid].cs.uky.edu:8082/api/getteam"
+    //curl --header "X-Auth-API-key:1234" "http://localhost:8081/api/getteam"
 
     //check remote
-    //curl --header "X-Auth-API-key:1234" "http://[linkblueid].cs.uky.edu:8081/api/checkmycep"
-
-    @GET
-    @Path("/checkmycep")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response checkMyEndpoint(@HeaderParam("X-Auth-API-Key") String authKey) {
-        String responseString = "{}";
-        try {
-
-            //get remote ip address from request
-            String remoteIP = request.get().getRemoteAddr();
-            //get the timestamp of the request
-            long access_ts = System.currentTimeMillis();
-            System.out.println("IP: " + remoteIP + " Timestamp: " + access_ts);
-
-            Map<String,String> responseMap = new HashMap<>();
-            if(Launcher.cepEngine != null) {
-
-                    responseMap.put("success", Boolean.TRUE.toString());
-                    responseMap.put("status_desc","CEP Engine exists");
-
-            } else {
-                responseMap.put("success", Boolean.FALSE.toString());
-                responseMap.put("status_desc","CEP Engine is null!");
-            }
-
-            responseString = gson.toJson(responseMap);
-
-
-        } catch (Exception ex) {
-
-            StringWriter sw = new StringWriter();
-            ex.printStackTrace(new PrintWriter(sw));
-            String exceptionAsString = sw.toString();
-            ex.printStackTrace();
-
-            return Response.status(500).entity(exceptionAsString).build();
-        }
-        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
-    }
-
+    //curl --header "X-Auth-API-key:1234" "http://[linkblueid].cs.uky.edu:8081/api/getteam"
 
     public boolean reset(){
         try {
 
             System.out.println("Clearing neo4j!");
             Launcher.neoApp.clear();
-//            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "patient");
-//            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "event");
             Launcher.eventMongo.delete();
             Document doc = new Document();
             doc.append("type", "event");
             Launcher.eventMongo.insert(doc);
-//            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "event");
-//            Launcher.mongoEngine.delete(Launcher.mongoDatabase, "contact");
             Launcher.contactMongo.delete();
             doc = new Document();
             doc.append("type", "contact");
             Launcher.contactMongo.insert(doc);
-//            Launcher.mongoEngine.insert(doc, Launcher.mongoDatabase, "contact");
-//            Launcher.eventMongo = new EventMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
-//            Launcher.contactMongo = new ContactMongo(Launcher.mongoEngine, Launcher.mongoDatabase);
 
             Launcher.vaccineMongo.delete();
             Launcher.hospitalMongo.delete();
@@ -394,51 +332,4 @@ public class API {
         }
         return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
     }
-
-
-
-
-
-
-
-
-
-    @GET
-    @Path("/getaccesscount")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAccessCount(@HeaderParam("X-Auth-API-Key") String authKey) {
-        String responseString = "{}";
-        try {
-
-            //get remote ip address from request
-            String remoteIP = request.get().getRemoteAddr();
-            //get the timestamp of the request
-            long access_ts = System.currentTimeMillis();
-            System.out.println("IP: " + remoteIP + " Timestamp: " + access_ts);
-
-            //generate event based on access
-            String inputEvent = gson.toJson(new accessRecord(remoteIP,access_ts));
-            System.out.println("inputEvent: " + inputEvent);
-
-            //send input event to CEP
-            Launcher.cepEngine.input(Launcher.inputStreamName, inputEvent);
-
-            //generate a response
-            Map<String,String> responseMap = new HashMap<>();
-            responseMap.put("accesscoint",String.valueOf(Launcher.accessCount));
-            responseString = gson.toJson(responseMap);
-
-        } catch (Exception ex) {
-
-            StringWriter sw = new StringWriter();
-            ex.printStackTrace(new PrintWriter(sw));
-            String exceptionAsString = sw.toString();
-            ex.printStackTrace();
-
-            return Response.status(500).entity(exceptionAsString).build();
-        }
-        return Response.ok(responseString).header("Access-Control-Allow-Origin", "*").build();
-    }
-
-
 }

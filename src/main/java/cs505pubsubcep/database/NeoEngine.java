@@ -7,9 +7,6 @@ import org.neo4j.driver.types.Node;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
-
-import static org.neo4j.driver.Config.TrustStrategy.trustAllCertificates;
 
 public class NeoEngine implements AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(NeoEngine.class.getName());
@@ -142,21 +139,11 @@ public class NeoEngine implements AutoCloseable {
         List<Record> rec = runQuery(q, p);
         System.out.println(rec);
         for(Record record: rec){
-//            System.out.println(record.get("n"));
-//            System.out.println("Keys: "+record.keys());
             Node node = record.get(key).asNode();
-//            System.out.println(node.labels());
             String neighbour = node.get("mrn").asString();
             if(!neighbour.equals(mrn)) {
                 contactMrn.add(node.get("mrn").asString());
             }
-
-//            for(String label : node.labels()){
-//                String neighbour = String.valueOf(node.get("mrn"));
-//                if(!neighbour.equals(mrn)) {
-//                    contactMrn.add(String.valueOf(node.get("mrn")));
-//                }
-//            }
 
         }
 
@@ -167,7 +154,6 @@ public class NeoEngine implements AutoCloseable {
         List<Record> rec = runQuery(q, p);
         System.out.println(rec);
         for(Record record: rec){
-//            System.out.println(record.get("n"));
             System.out.println("Keys: "+record.keys());
             Node node = record.get(key).asNode();
             System.out.println(node.labels());
@@ -191,21 +177,18 @@ public class NeoEngine implements AutoCloseable {
             String query = "merge (p:Patient {mrn:$mrn})";
             contactParam.put("mrn", contact);
             Result resContact = run(query, contactParam);
-//            System.out.println("Result-contact: "+resContact);
         }
 
         Map<String, Object> tmpParam = new HashMap<String, Object>();
         String myquery = "merge (p:Patient {mrn:$mrn})";
         tmpParam.put("mrn", mainMRN);
         Result resTmpContact = run(myquery, tmpParam);
-//        System.out.println("Result-mainMRN: "+resTmpContact);
 
         for(String ev : eventList){
             Map<String, Object> eventParam = new HashMap<String, Object>();
             String query = "merge (p:Event {id:$evid})";
             eventParam.put("evid", ev);
             Result resContact = run(query, eventParam);
-//            System.out.println("Result-event: "+resContact);
         }
 
         //Relation creation
@@ -216,7 +199,6 @@ public class NeoEngine implements AutoCloseable {
             contactParam.put("mrn", contact);
             contactParam.put("mainMRN", mainMRN);
             Result resContact = run(query, contactParam);
-//            System.out.println("Result-relation-contact: "+resContact);
         }
 
         for(String ev : eventList){
@@ -226,72 +208,7 @@ public class NeoEngine implements AutoCloseable {
             Param.put("evid", ev);
             Param.put("mainMRN", mainMRN);
             Result resContact = run(query, Param);
-//            System.out.println("Result-relation-event-mrn: "+resContact);
         }
     }
 
-
-
-    public void createFriendship(final String person1Name, final String person2Name) {
-        // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
-        // The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
-        String createFriendshipQuery = "CREATE (p1:Person { name: $person1_name, mrn: $mrn1 })\n" +
-                "CREATE (p2:Person { name: $person2_name, mrn: $mrn2 })\n" +
-                "CREATE (p1)-[:KNOWS]->(p2)\n" +
-                "RETURN p1, p2";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("person1_name", person1Name);
-        params.put("person2_name", person2Name);
-        params.put("mrn1", 12345);
-        params.put("mrn2", 56748);
-
-        try (Session session = driver.session()) {
-            // Write transactions allow the driver to handle retries and transient errors
-            Record record = session.writeTransaction(tx -> {
-                Result result = tx.run(createFriendshipQuery, params);
-                return result.single();
-            });
-            System.out.println(String.format("Created friendship between: %s, %s",
-                    record.get("p1").get("name").asString(),
-                    record.get("p2").get("name").asString()));
-            // You should capture any errors along with the query and data for traceability
-        } catch (Neo4jException ex) {
-            LOGGER.log(Level.SEVERE, createFriendshipQuery + " raised an exception", ex);
-            throw ex;
-        }
-    }
-
-    public void findPerson(final String personName) {
-        String readPersonByNameQuery = "MATCH (p:Person)\n" +
-                "WHERE p.name = $person_name\n" +
-                "RETURN p.name AS name";
-
-        Map<String, Object> params = Collections.singletonMap("person_name", personName);
-
-        try (Session session = driver.session()) {
-            Record record = session.readTransaction(tx -> {
-                Result result = tx.run(readPersonByNameQuery, params);
-                return result.single();
-            });
-            System.out.println(String.format("Found person: %s", record.get("name").asString()));
-            // You should capture any errors along with the query and data for traceability
-        } catch (Neo4jException ex) {
-            LOGGER.log(Level.SEVERE, readPersonByNameQuery + " raised an exception", ex);
-            throw ex;
-        }
-    }
-
-    public static void main(String... args) throws Exception {
-        // Aura queries use an encrypted connection using the "neo4j+s" protocol
-        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
-
-        String user = "neo4j";
-        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
-
-        try (NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig())) {
-            app.createFriendship("Alice", "David");
-            app.findPerson("Alice");
-        }
-    }
 }

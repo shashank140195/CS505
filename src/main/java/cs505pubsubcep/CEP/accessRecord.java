@@ -16,10 +16,3 @@ public class accessRecord {
         return "zip_code:" + zip_code + " timestamp:" + timestamp;
     }
 }
-
-/*
-{
-        "remote_ip":  "127.0.0.1",							 #A
-        "timestamp": "1576600245000",						 #B
-        }
-*/
