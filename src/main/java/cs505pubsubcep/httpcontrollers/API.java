@@ -127,10 +127,18 @@ public class API {
                                         @PathParam("hospital_id") String hid) {
         String responseString = "{}";
 
+        /*
+
+        in-patient_count or in-patient_vax not found in json
+        icu-patient_count or icu-patient_vax not found in json
+        patient_vent_count or patient_vent_vax not found in json
+
+         */
+
         Map<String, Object> res = new HashMap<String, Object>();
-        String[] statusNames = {"in", "icu", "vent"};
-        String constKeyCount = "_patient_count";
-        String constKeyVax = "_patient_vax";
+        String[] statusNames = {"in-patient", "icu-patient", "patient_vent"};
+        String constKeyCount = "_count";
+        String constKeyVax = "_vax";
         try {
             //in-paitent = 1, icu = 2, vent =3
 
@@ -198,9 +206,9 @@ public class API {
         String responseString = "{}";
 
         Map<String, Object> res = new HashMap<String, Object>();
-        String[] statusNames = {"in", "icu", "vent"};
-        String constKeyCount = "_patient_count";
-        String constKeyVax = "_patient_vax";
+        String[] statusNames = {"in-patient", "icu-patient", "patient_vent"};
+        String constKeyCount = "_count";
+        String constKeyVax = "_vax";
         try {
             //in-paitent = 1, icu = 2, vent =3
 

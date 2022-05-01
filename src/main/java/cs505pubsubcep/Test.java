@@ -27,19 +27,19 @@ public class Test {
         neo4j
          */
 
-        String mainMRN = "b47197a2-c31b-11ec-859a-3af9d3a61d88";
-
-        List<String> contactList = new ArrayList<String>();
-        List<String> eventList = new ArrayList<String>();
-
-        contactList.add("4225fbc0-c2c1-11ec-ae31-3af9d3a61d88");
-//        contactList.add("4225fbf2-c2c1-11ec-ae31-3af9d3a61d88");
-
-
-        eventList.add("4225fa1c-c2c1-11ec-ae31-3af9d3a61d88");
-        eventList.add("4225fa58-c2c1-11ec-ae31-3af9d3a61d88");
-        eventList.add("4225fa58-c2c1-11ec-ae31-3af9d3a61d88");
-        eventList.add("4225fa1c-c2c1-11ec-ae31-3af9d3a61d88");
+//        String mainMRN = "b47197a2-c31b-11ec-859a-3af9d3a61d88";
+//
+//        List<String> contactList = new ArrayList<String>();
+//        List<String> eventList = new ArrayList<String>();
+//
+//        contactList.add("4225fbc0-c2c1-11ec-ae31-3af9d3a61d88");
+////        contactList.add("4225fbf2-c2c1-11ec-ae31-3af9d3a61d88");
+//
+//
+//        eventList.add("4225fa1c-c2c1-11ec-ae31-3af9d3a61d88");
+//        eventList.add("4225fa58-c2c1-11ec-ae31-3af9d3a61d88");
+//        eventList.add("4225fa58-c2c1-11ec-ae31-3af9d3a61d88");
+//        eventList.add("4225fa1c-c2c1-11ec-ae31-3af9d3a61d88");
 
 
         // Aura queries use an encrypted connection using the "neo4j+s" protocol
@@ -49,6 +49,10 @@ public class Test {
         String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
 
         NeoEngine app = new NeoEngine(uri, user, password, Config.defaultConfig());
+
+        Map<String, ArrayList<String>> tmp;
+        tmp = app.getContactEvents("p7");
+        System.out.println(tmp);
 
 //        app.getContactEvents("eb1f22b8-c340-11ec-b618-3af9d3a61d88");
 //        app.close();

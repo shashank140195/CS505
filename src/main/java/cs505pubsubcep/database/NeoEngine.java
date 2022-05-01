@@ -7,6 +7,7 @@ import org.neo4j.driver.types.Node;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class NeoEngine implements AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(NeoEngine.class.getName());
@@ -56,6 +57,25 @@ public class NeoEngine implements AutoCloseable {
             return null;
         }
         return null;
+    }
+
+    public List<String> getPatient(String eid){
+        String q = "match (e:Event)<-[r:attend]-(p:Patient) where e.id=$eid return p";
+        Map<String, Object> p = new HashMap<>();
+        p.put("eid", eid);
+        List<Record> masterRecord = runQuery(q, p);
+
+        List<String> patList = new ArrayList<String>();
+
+//        System.out.println(masterRecord);
+
+        for(Record record : masterRecord){
+            Node pat = record.get("p").asNode();
+            String pmrn = pat.get("mrn").asString();
+            patList.add(pmrn);
+        }
+
+        return patList;
     }
 
 
@@ -120,6 +140,23 @@ public class NeoEngine implements AutoCloseable {
 
         }
         System.out.println(contactEventMap);
+
+        System.out.println("MRN: "+mrn);
+
+        for(String eid : contactEventMap.keySet()){
+            List<String> patList = getPatient(eid);
+            for(String pmrn : patList) {
+                if(!pmrn.equals(mrn)) {
+                    contactEventMap.get(eid).add(pmrn);
+                }
+            }
+            List<String> presentList = contactEventMap.get(eid);
+            List<String> newList = presentList.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+            contactEventMap.get(eid).clear();
+            contactEventMap.get(eid).addAll(newList);
+        }
         return contactEventMap;
 
     }
