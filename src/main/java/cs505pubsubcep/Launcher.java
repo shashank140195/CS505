@@ -59,10 +59,10 @@ public class Launcher {
     public static void main(String[] args) throws IOException {
 
         //neo4j
-        String uri = "neo4j+s://9d9f2391.databases.neo4j.io";
+        String uri = "neo4j+s://<id>.databases.neo4j.io";
 
-        String user = "neo4j";
-        String password = "O9OG4BQLcYCrJ70Dc4JsjXhVWwxhnKClOLaXk0881uM";
+        String user = "";
+        String password = "";
 
         neoApp = new NeoEngine(uri, user, password, Config.defaultConfig());
         neoApp.clear();
@@ -122,10 +122,10 @@ public class Launcher {
 
         //starting pateint_data collector
         Map<String,String> message_config = new HashMap<>();
-        message_config.put("hostname","128.163.202.50"); //Fill config for your team in
-        message_config.put("username","student");
-        message_config.put("password","student01");
-        message_config.put("virtualhost","1");
+        message_config.put("hostname",""); //Fill config for your team in
+        message_config.put("username","");
+        message_config.put("password","");
+        message_config.put("virtualhost","");
         message_config.put("topicname", "patient_list");
 
 

@@ -42,7 +42,10 @@ CS505 Spring 2022 Final Project
    <activeProfiles />
 </settings>
 ```
-3. Run mvn clean package
+3. Run 
+```
+mvn clean package
+```
 
 ## Run in localhost
 1. Run this command:

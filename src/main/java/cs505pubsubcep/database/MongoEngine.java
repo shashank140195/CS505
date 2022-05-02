@@ -13,7 +13,7 @@ public class MongoEngine {
 
 
 
-        client = MongoClients.create("mongodb+srv://diginova:diginova@cluster0.dqmo2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+        client = MongoClients.create("<connection string>");
 
 
     }
